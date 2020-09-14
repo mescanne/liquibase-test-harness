@@ -5,29 +5,35 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.OneToMany
 import javax.persistence.Table
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
 @Table(name = "authors")
-class Authors {
+class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     int id
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     String firstName
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     String lastName
 
+    @Column(nullable = false)
     String email
 
-    @Column(name = "birthdate")
+    @Column(name = "birthdate", nullable = false)
     LocalDate birthdate
 
-    @Column (name = "added")
+    @Column (name = "added", nullable = false)
     ZonedDateTime added
+
+    @OneToMany(mappedBy = "post")
+    List<Post> posts
 }

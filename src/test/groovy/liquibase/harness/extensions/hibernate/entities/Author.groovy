@@ -1,11 +1,13 @@
 package liquibase.harness.extensions.hibernate.entities
 
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
 import javax.persistence.OneToMany
 import javax.persistence.Table
 import java.time.LocalDate
@@ -34,6 +36,6 @@ class Author {
     @Column (name = "added", nullable = false)
     ZonedDateTime added
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<Post> posts
 }

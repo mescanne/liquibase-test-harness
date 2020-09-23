@@ -11,8 +11,6 @@ class Post {
     @Column(name = "id")
     int id
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", table = "authors", nullable = false)
     String authorId
 
     @Column(nullable = false)

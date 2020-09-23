@@ -23,7 +23,7 @@ class ChangeObjectsTest extends Specification {
 
     def setupSpec() {
         config = FileUtils.readYamlConfig("testConfig.yml")
-        TestUtils.validateAndSetInputFileFormat(config)
+        TestUtils.validateAndSetPropertiesFromCommandLine(config)
     }
 
     @Unroll
@@ -42,7 +42,7 @@ class ChangeObjectsTest extends Specification {
 
         then:
         if(!testInput.pathToChangeLogFile.endsWith(".sql")){
-            expectedSqlList == generatedSql
+            assert expectedSqlList == generatedSql
         }
 
         when:

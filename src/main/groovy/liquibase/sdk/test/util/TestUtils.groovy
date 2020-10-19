@@ -109,4 +109,52 @@ class TestUtils {
 
         return returnPaths
     }
+
+    static void validateAndSetPropertiesFromCommandLine(TestConfig testConfig) {
+        def log = Logger.getLogger(this.class.name)
+
+        if (System.getProperty("revalidateSql") == null) {
+            revalidateSql = true
+        } else {
+            revalidateSql = Boolean.valueOf(System.getProperty("revalidateSql"))
+        }
+        log.info("Revalidate SQL: ${revalidateSql}")
+
+        String inputFormat = System.getProperty("inputFormat")
+        String changeObjects = System.getProperty("changeObjects")
+        String dbName = System.getProperty("dbName")
+        String dbVersion = System.getProperty("dbVersion")
+        if (inputFormat && (!supportedChangeLogFormats.contains(inputFormat))) {
+            throw new IllegalArgumentException(inputFormat + " inputFormat is not supported")
+        }
+        testConfig.inputFormat = inputFormat ?: testConfig.inputFormat
+        log.warning("Only " + testConfig.inputFormat + " input files are taken into account for this test run")
+
+//        if (changeObjects) {
+//            testConfig.defaultChangeObjects = Arrays.asList(changeObjects.split(","))
+//            //in case user provided changeObjects in cmd run only them regardless of config file
+//            for (def db : testConfig.databasesUnderTest) {
+//                db.databaseSpecificChangeObjects = null
+//            }
+//            log.info("running for next changeObjects : " + testConfig.defaultChangeObjects)
+//        }
+        if (dbName) {
+            //TODO try improve this, add logging
+            testConfig.databasesUnderTest = testConfig.databasesUnderTest.stream()
+                    .filter({ it.name.equalsIgnoreCase(dbName) })
+                    .findAny()
+                    .map({ Collections.singletonList(it) })
+                    .orElse(testConfig.databasesUnderTest)
+
+            if (dbVersion)
+                for (DatabaseUnderTest databaseUnderTest : testConfig.databasesUnderTest) {
+                    databaseUnderTest.versions = databaseUnderTest.versions.stream()
+                            .filter({ it.version.equalsIgnoreCase(dbVersion) })
+                            .findAny()
+                            .map({ Collections.singletonList(it) })
+                            .orElse(databaseUnderTest.versions)
+                }
+        }
+        log.info(testConfig.toString())
+    }
 }

@@ -1,4 +1,4 @@
-package liquibase.sdk.test
+package liquibase.sdk.test.change
 
 import liquibase.CatalogAndSchema
 import liquibase.Liquibase

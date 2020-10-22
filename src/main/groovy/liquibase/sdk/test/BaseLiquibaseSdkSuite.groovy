@@ -1,5 +1,6 @@
-package liquibase.sdk.test;
+package liquibase.sdk.test
 
+import liquibase.sdk.test.change.ChangeObjectTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

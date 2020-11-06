@@ -14,6 +14,7 @@ class SnapshotTest {
     @Canonical
     static class TestConfig {
         String setup
+        String cleanup
 
         Function<DatabaseSnapshot, Void> verify
     }

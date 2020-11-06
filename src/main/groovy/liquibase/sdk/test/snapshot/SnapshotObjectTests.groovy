@@ -25,13 +25,38 @@ class SnapshotObjectTests extends Specification {
         when:
         Assume.assumeFalse("Cannot test against offline database", input.database.database.getConnection() instanceof OfflineConnection)
 
-        new Liquibase((String) null, TestConfig.instance.resourceAccessor, input.database.database).dropAll()
         input.database.database.execute([new RawSqlStatement(input.permutation.setup)] as SqlStatement[], null)
+        input.database.database.commit()
 
         def snapshot = SnapshotGeneratorFactory.instance.createSnapshot(new CatalogAndSchema(null, null), input.database.database, new SnapshotControl(input.database.database))
 
         then:
         input.permutation.verify.apply(snapshot) == null
+
+        cleanup:
+        if (!(input.database.database.getConnection() instanceof OfflineConnection)) {
+            def cleanupSql = input.permutation.cleanup
+            def generatedCleanup = false
+            if (cleanupSql == null) {
+                if (input.permutation.setup.toLowerCase().startsWith("create ")) {
+                    def splitSetup = input.permutation.setup.split("\\s+")
+                    cleanupSql = "drop ${splitSetup[1]} ${splitSetup[2]}"
+                    generatedCleanup = true
+                }
+            }
+            assert cleanupSql != null: "No cleanup config specified and one cannot be auto-generated"
+            try {
+                input.database.database.execute([new RawSqlStatement(cleanupSql)] as SqlStatement[], null)
+                input.database.database.commit()
+            } catch (Throwable e) {
+                if (generatedCleanup) {
+                    throw new RuntimeException("Cannot execute generated cleanup statement $cleanupSql: $e.message. You may need to specify a 'cleanup' block", e)
+                } else {
+                    throw new RuntimeException("Cannot execute specified cleanup statement $cleanupSql: $e.message", e)
+                }
+            }
+        }
+
 
         where:
         input << buildTestInput()

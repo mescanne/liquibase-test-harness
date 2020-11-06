@@ -11,6 +11,7 @@ import liquibase.sql.Sql
 import liquibase.sqlgenerator.SqlGeneratorFactory
 
 import java.util.logging.Logger
+import java.util.regex.Pattern
 
 class TestUtils {
 

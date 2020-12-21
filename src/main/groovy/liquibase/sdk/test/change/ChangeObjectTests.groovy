@@ -33,16 +33,16 @@ class ChangeObjectTests extends Specification {
         def generatedSql = cleanSql(TestUtils.toSqlFromLiquibaseChangeSets(liquibase))
 
         then:
-        assert expectedSnapshot != null : "No expectedSnapshot for ${testInput.changeObject} against ${testInput.database.shortName} ${testInput.database.databaseMajorVersion}.${testInput.database.databaseMinorVersion}"
+        assert expectedSnapshot != null: "No expectedSnapshot for ${testInput.changeObject} against ${testInput.database.shortName} ${testInput.database.databaseMajorVersion}.${testInput.database.databaseMinorVersion}"
 
         if (expectedSql != null && !testInput.pathToChangeLogFile.endsWith(".sql")) {
-            assert generatedSql == expectedSql : "Expected SQL does not match actual sql. Deleting the existing expectedSql file will test that the new SQL works correctly and will auto-generate a new version if it passes"
-            if (!TestUtils.revalidateSql) {
+            assert generatedSql == expectedSql: "Expected SQL does not match actual sql. Deleting the existing expectedSql file will test that the new SQL works correctly and will auto-generate a new version if it passes"
+            if (!TestConfig.instance.revalidateSql) {
                 return //sql is right. Nothing more to test
             }
         }
 
-        assert testInput.database.getConnection() instanceof JdbcConnection : "We cannot verify the following SQL works works because the database is offline:\n${generatedSql}"
+        assert testInput.database.getConnection() instanceof JdbcConnection: "We cannot verify the following SQL works works because the database is offline:\n${generatedSql}"
 
         when:
         try {

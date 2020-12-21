@@ -1,9 +1,7 @@
 package liquibase.sdk.test.snapshot
 
 import liquibase.CatalogAndSchema
-import liquibase.Liquibase
 import liquibase.database.OfflineConnection
-import liquibase.database.jvm.JdbcConnection
 import liquibase.sdk.test.config.DatabaseUnderTest
 import liquibase.sdk.test.config.TestConfig
 import liquibase.snapshot.SnapshotControl

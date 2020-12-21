@@ -1,7 +1,6 @@
 package liquibase.sdk.test.config
 
 import groovy.transform.ToString
-import liquibase.Scope
 import liquibase.database.DatabaseFactory
 import liquibase.database.OfflineConnection
 import liquibase.lockservice.LockServiceFactory
@@ -28,11 +27,11 @@ class TestConfig {
     TestConfig() {
     }
 
-    public static TestConfig getInstance() {
+    static TestConfig getInstance() {
         if (instance == null) {
             Yaml configFileYml = new Yaml()
             def testConfig = getClass().getResourceAsStream("/liquibase.sdk.test.yml")
-            assert testConfig != null : "Cannot find liquibase.sdk.test.yml in classpath"
+            assert testConfig != null: "Cannot find liquibase.sdk.test.yml in classpath"
 
             instance = configFileYml.loadAs(testConfig, TestConfig.class)
 
@@ -41,7 +40,7 @@ class TestConfig {
             } else {
                 instance.revalidateSql = Boolean.valueOf(System.getProperty("revalidateSql"))
             }
-            Logger.getLogger(this.class.name).info("Revalidate SQL: ${instance.revalidateSql}")
+            Logger.getLogger(TestConfig.name).info("Revalidate SQL: ${instance.revalidateSql}")
 
             String dbName = System.getProperty("dbName")
             String dbVersion = System.getProperty("dbVersion")
@@ -61,7 +60,7 @@ class TestConfig {
             for (def databaseUnderTest : instance.databasesUnderTest) {
                 databaseUnderTest.database = DatabaseConnectionUtil.initializeDatabase(databaseUnderTest.url, databaseUnderTest.username, databaseUnderTest.password)
                 if (databaseUnderTest.database == null) {
-                    Logger.getLogger(this.class.name).severe("Cannot connect to $databaseUnderTest.url. Using offline" +
+                    Logger.getLogger(TestConfig.name).severe("Cannot connect to $databaseUnderTest.url. Using offline" +
                             " connection")
 
                     for (def possibleDatabase : DatabaseFactory.getInstance().getImplementedDatabases()) {
@@ -87,21 +86,21 @@ class TestConfig {
                         databaseUnderTest.name += " ${databaseUnderTest.database.getDatabaseProductVersion()}"
                     }
                 } else if (databaseUnderTest.version == null) {
-                    Logger.getLogger(this.class.name)
+                    Logger.getLogger(TestConfig.name)
                             .warning("Database version is not provided applying version from Database metadata")
                     databaseUnderTest.version = databaseUnderTest.database.getDatabaseMajorVersion() + "."
                     +databaseUnderTest.database.getDatabaseMinorVersion()
-                }
-                else if (databaseUnderTest.name != databaseUnderTest.database.shortName ||
+                } else if (databaseUnderTest.name != databaseUnderTest.database.shortName ||
                         !databaseUnderTest.version.startsWith(databaseUnderTest.database.databaseMajorVersion.toString())) {
-                    Logger.getLogger(this.class.name).severe("Provided database name/majorVersion doesn't match with actual\
-${System.getProperty("line.separator")}    provided: ${databaseUnderTest.name} ${databaseUnderTest.version}\
-${System.getProperty("line.separator")}    actual: ${databaseUnderTest.database.shortName} \
-${databaseUnderTest.database.databaseMajorVersion.toString()}")
+                    Logger.getLogger(TestConfig.name).severe("Provided database name/majorVersion doesn't match with actual\
+            ${System.getProperty("line.separator")}    provided: ${databaseUnderTest.name} ${databaseUnderTest.version}\
+            ${System.getProperty("line.separator")}    actual: ${databaseUnderTest.database.shortName} \
+            ${databaseUnderTest.database.databaseMajorVersion.toString()}")
                 }
             }
         }
         return instance
-
     }
+
+
 }

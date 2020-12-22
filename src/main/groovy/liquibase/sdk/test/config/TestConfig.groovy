@@ -88,8 +88,9 @@ class TestConfig {
                 } else if (databaseUnderTest.version == null) {
                     Logger.getLogger(TestConfig.name)
                             .warning("Database version is not provided applying version from Database metadata")
-                    databaseUnderTest.version = databaseUnderTest.database.getDatabaseMajorVersion() + "."
-                    +databaseUnderTest.database.getDatabaseMinorVersion()
+                    Integer minorVersion = databaseUnderTest.database.getDatabaseMinorVersion()
+                    databaseUnderTest.version = databaseUnderTest.database.getDatabaseMajorVersion().toString().concat(
+                            minorVersion ? "." + minorVersion : "")
                 } else if (databaseUnderTest.name != databaseUnderTest.database.shortName ||
                         !databaseUnderTest.version.startsWith(databaseUnderTest.database.databaseMajorVersion.toString())) {
                     Logger.getLogger(TestConfig.name).severe("Provided database name/majorVersion doesn't match with actual\

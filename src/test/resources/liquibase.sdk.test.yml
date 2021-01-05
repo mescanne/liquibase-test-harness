@@ -50,3 +50,6 @@ databasesUnderTest:
     username: lbuser
     password:
 
+  - name: cloudspanner
+    version: 1
+    url: jdbc:cloudspanner://localhost:9010/projects/projectid/instances/test-instance/databases/test?autocommit=true;usePlainText=true

@@ -1,0 +1,8 @@
+{
+  "instanceId": "test-instance",
+  "instance": {
+      "config": "config-1",
+      "displayName": "Test Instance",
+      "nodeCount": 1
+  }
+}

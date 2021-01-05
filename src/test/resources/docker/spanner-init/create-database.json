@@ -1,0 +1,8 @@
+{
+"createStatement":
+"
+CREATE DATABASE test
+",
+"extraStatements": [
+]
+}

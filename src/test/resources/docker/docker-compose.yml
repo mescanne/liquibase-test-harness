@@ -2,6 +2,19 @@ version: '3.3'
 
 services:
 
+  spanner:
+    image: gcr.io/cloud-spanner-emulator/emulator
+    ports:
+      - "9010:9010"
+      - "9020:9020"
+
+  spanner-init:
+    build:
+      context: spanner-init
+      dockerfile: Dockerfile
+    depends_on:
+      - "spanner"
+
   mysql-5.7:
     image: library/mysql:5.7.31
     ports:
